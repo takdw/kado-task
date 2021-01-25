@@ -1,7 +1,7 @@
 <template>
   <div class="flex py-4 hover:bg-gray-50 transition ease-in duration-150">
     <div class="flex-shrink-0 px-4">
-      <Checkbox />
+      <Checkbox :value="selected" />
     </div>
     <div class="flex-1 grid grid-cols-10 gap-y-5">
       <div class="col-span-3 text-xs">{{ employee.name }}</div>
@@ -46,6 +46,10 @@ export default {
     employee: {
       type: Object,
       required: true,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
     },
   },
   components: {

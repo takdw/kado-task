@@ -37,75 +37,7 @@
         </p>
       </div>
       <div class="mt-4">
-        <div class="grid grid-cols-5 gap-2">
-          <div class="col-span-3">
-            <label for="search" class="sr-only">Search</label>
-            <div class="relative">
-              <input
-                id="search"
-                class="w-full p-3 pr-10 text-sm border border-kado-gray rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150"
-                placeholder="Search"
-              />
-              <div
-                class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
-              >
-                <svg
-                  class="w-5 h-5 text-pink-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-          <div class="col-span-2">
-            <label for="team" class="sr-only">Team</label>
-            <div class="relative">
-              <select
-                id="team"
-                class="w-full p-3 bg-white border border-kado-gray text-sm rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150 appearance-none"
-              >
-                <option value="">Team</option>
-                <option
-                  v-for="team in teams"
-                  :value="teams.id"
-                  :key="`team-${team.id}-option`"
-                >
-                  {{ team.name }}
-                </option>
-              </select>
-              <div
-                class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
-              >
-                <svg
-                  class="w-5 h-5 text-pink-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="mt-6">
-        <EmployeesTable :employees="employees" />
+        <EmployeesDataTable :employees-data="employees" :teams="teams" />
       </div>
       <div class="mt-11">
         <div class="flex justify-center items-center space-x-2.5">
@@ -128,12 +60,12 @@
 </template>
 
 <script>
-import EmployeesTable from "@/components/EmployeesTable";
+import EmployeesDataTable from "@/components/EmployeesTable";
 
 export default {
   name: "App",
   components: {
-    EmployeesTable,
+    EmployeesDataTable,
   },
   data: () => ({
     employees: [],
