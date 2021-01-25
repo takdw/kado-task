@@ -4,8 +4,8 @@
       <Checkbox />
     </div>
     <div class="flex-1 grid grid-cols-10 gap-y-5">
-      <div class="col-span-3 text-xs">John Doe</div>
-      <div class="col-span-3 text-xs">johndoe@domain.com</div>
+      <div class="col-span-3 text-xs">{{ employee.name }}</div>
+      <div class="col-span-3 text-xs">{{ employee.email }}</div>
       <div class="col-span-2 text-xs">€ 10,00</div>
       <div class="col-span-2 text-xs">NL</div>
       <div class="col-span-6">
@@ -42,6 +42,12 @@
 import Checkbox from "@/components/Checkbox";
 
 export default {
+  props: {
+    employee: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {
     Checkbox,
   },

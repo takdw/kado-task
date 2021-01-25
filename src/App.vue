@@ -73,7 +73,14 @@
                 id="team"
                 class="w-full p-3 bg-white border border-kado-gray text-sm rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150 appearance-none"
               >
-                <option value="">Team 1</option>
+                <option value="">Team</option>
+                <option
+                  v-for="team in teams"
+                  :value="teams.id"
+                  :key="`team-${team.id}-option`"
+                >
+                  {{ team.name }}
+                </option>
               </select>
               <div
                 class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
@@ -98,75 +105,7 @@
         </div>
       </div>
       <div class="mt-6">
-        <div
-          class="border border-kado-gray divide-y divide-kado-gray rounded-sm"
-        >
-          <div class="flex py-2">
-            <div class="flex-shrink-0 px-4">
-              <Checkbox />
-            </div>
-            <div class="flex-1 grid grid-cols-10">
-              <div
-                class="col-span-3 text-xxs uppercase text-pink-primary font-semibold tracking-widest"
-              >
-                To
-              </div>
-              <div
-                class="col-span-3 text-xxs uppercase text-pink-primary font-semibold tracking-widest"
-              >
-                Email
-              </div>
-              <div
-                class="col-span-2 text-xxs uppercase text-pink-primary font-semibold tracking-widest"
-              >
-                Amount
-              </div>
-              <div
-                class="col-span-2 text-xxs uppercase text-pink-primary font-semibold tracking-widest"
-              >
-                Language
-              </div>
-            </div>
-          </div>
-          <EmployeeRow v-for="i in 10" :key="i" />
-        </div>
-      </div>
-      <div class="mt-9">
-        <div class="flex justify-center items-center space-x-2">
-          <button type="button">
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 19l-7-7 7-7"
-              ></path>
-            </svg>
-          </button>
-          <p class="text-xs"><span class="text-pink-primary">1</span> of 10</p>
-          <button type="button">
-            <svg
-              class="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 5l7 7-7 7"
-              ></path>
-            </svg>
-          </button>
-        </div>
+        <EmployeesTable :employees="employees" />
       </div>
       <div class="mt-11">
         <div class="flex justify-center items-center space-x-2.5">
@@ -189,14 +128,26 @@
 </template>
 
 <script>
-import Checkbox from "@/components/Checkbox";
-import EmployeeRow from "@/components/EmployeeRow";
+import EmployeesTable from "@/components/EmployeesTable";
 
 export default {
   name: "App",
   components: {
-    Checkbox,
-    EmployeeRow,
+    EmployeesTable,
+  },
+  data: () => ({
+    employees: [],
+    teams: [],
+  }),
+  created() {
+    Promise.all([fetch("/api/employees"), fetch("/api/teams")])
+      .then(([employeesResponse, teamsResponse]) =>
+        Promise.all([employeesResponse.json(), teamsResponse.json()])
+      )
+      .then(([employees, teams]) => {
+        this.employees = employees;
+        this.teams = teams;
+      });
   },
 };
 </script>
