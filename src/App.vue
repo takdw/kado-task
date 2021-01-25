@@ -31,12 +31,6 @@
         </h2>
       </div>
       <div class="mt-16">
-        <p class="text-xs">
-          You could customize vouchers either individually or perform a mass
-          action.
-        </p>
-      </div>
-      <div class="mt-4">
         <EmployeesDataTable :employees-data="employees" :teams="teams" />
       </div>
       <div class="mt-11">

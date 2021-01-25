@@ -1,70 +1,189 @@
 <template>
-  <div>
-    <div class="grid grid-cols-5 gap-2">
-      <div class="col-span-3">
-        <label for="search" class="sr-only">Search</label>
-        <div class="relative">
-          <input
-            @input="search"
-            v-model="searchQuery"
-            id="search"
-            class="w-full p-3 pr-10 text-sm border border-kado-gray rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150"
-            placeholder="Search"
-          />
-          <div
-            class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
-          >
-            <svg
-              class="w-5 h-5 text-pink-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+  <div class="mt-16">
+    <div v-if="selected.length < 2">
+      <p class="text-xs">
+        You could customize vouchers either individually or perform a mass
+        action.
+      </p>
+      <div class="mt-4 grid grid-cols-5 gap-2">
+        <div class="col-span-3">
+          <label for="search" class="sr-only">Search</label>
+          <div class="relative">
+            <input
+              @input="search"
+              v-model="searchQuery"
+              id="search"
+              class="w-full p-3 pr-10 text-xs border border-kado-gray rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150"
+              placeholder="Search"
+            />
+            <div
+              class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              ></path>
-            </svg>
+              <svg
+                class="w-5 h-5 text-pink-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="col-span-2">
+          <label for="team" class="sr-only">Team</label>
+          <div class="relative">
+            <select
+              @change="teamSelected"
+              id="team"
+              class="w-full p-3 bg-white border border-kado-gray text-xs rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150 appearance-none"
+            >
+              <option value="">Team</option>
+              <option
+                v-for="team in teams"
+                :value="team.id"
+                :key="`team-${team.id}-option`"
+              >
+                {{ team.name }}
+              </option>
+            </select>
+            <div
+              class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
+            >
+              <svg
+                class="w-5 h-5 text-pink-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-span-2">
-        <label for="team" class="sr-only">Team</label>
-        <div class="relative">
-          <select
-            @change="teamSelected"
-            id="team"
-            class="w-full p-3 bg-white border border-kado-gray text-sm rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150 appearance-none"
-          >
-            <option value="">Team</option>
-            <option
-              v-for="team in teams"
-              :value="team.id"
-              :key="`team-${team.id}-option`"
+    </div>
+    <div v-else>
+      <p class="text-xs">
+        <strong class="font-bold">{{ selected.length }}</strong> Employees are
+        selected, allowing you to perform a mass action.
+      </p>
+      <div class="mt-4 grid grid-cols-9 gap-2">
+        <div class="col-span-1">
+          <label for="search" class="sr-only">Amount</label>
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 left-0 flex items-center px-3 pointer-events-none"
             >
-              {{ team.name }}
-            </option>
-          </select>
-          <div
-            class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
-          >
-            <svg
-              class="w-5 h-5 text-pink-primary"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+              <span class="text-pink-primary">€</span>
+            </div>
+            <input
+              v-model="massUpdate.amount"
+              id="search"
+              class="w-full p-3 pl-8 text-xs border border-kado-gray rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150"
+              placeholder="Amount"
+            />
+          </div>
+        </div>
+        <div class="col-span-2">
+          <label for="date" class="sr-only">Delivery Date</label>
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M19 9l-7 7-7-7"
-              ></path>
-            </svg>
+              <svg
+                class="w-4 h-4 text-pink-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </div>
+            <input
+              type="date"
+              v-model="massUpdate.date"
+              id="date"
+              class="w-full p-3 pr-8 text-xs border border-kado-gray rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150"
+              placeholder="Delivery Date"
+            />
+          </div>
+        </div>
+        <div class="col-span-2">
+          <label for="time" class="sr-only">Delivery Time</label>
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 right-0 flex items-center px-3 pointer-events-none"
+            >
+              <svg
+                class="w-4 h-4 text-pink-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+            <input
+              type="time"
+              v-model="massUpdate.time"
+              id="time"
+              class="w-full p-3 pr-8 text-xs border border-kado-gray rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150"
+              placeholder="Delivery Date"
+            />
+          </div>
+        </div>
+        <div class="col-span-4">
+          <label for="message" class="sr-only">Message</label>
+          <div class="relative">
+            <div
+              class="absolute inset-y-0 left-0 flex items-center px-3 pointer-events-none"
+            >
+              <svg
+                class="w-4 h-4 text-pink-primary"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                ></path>
+              </svg>
+            </div>
+            <input
+              v-model="massUpdate.message"
+              id="message"
+              class="w-full p-3 pl-8 text-xs border border-kado-gray rounded-lg focus:outline-none focus:border-pink-primary transition ease-in duration-150"
+              placeholder="Message"
+            />
           </div>
         </div>
       </div>
@@ -104,6 +223,9 @@
         :key="employee.id"
         :employee="employee"
         :selected="selected.includes(employee.id)"
+        @employee-selected="handleEmployeeSelect"
+        @employee-deselected="handleEmployeeDeselect"
+        :update="massUpdate"
       />
     </div>
     <div class="mt-9">
@@ -179,6 +301,12 @@ export default {
     selectedTeam: "",
     searchResults: [],
     searchQuery: "",
+    massUpdate: {
+      amount: "",
+      date: "",
+      time: "",
+      message: "",
+    },
   }),
   watch: {
     selectAll(val) {
@@ -236,6 +364,17 @@ export default {
       this.searchResults = this.employeesData.filter(employee =>
         employee.name.toLowerCase().includes(e.target.value.toLowerCase())
       );
+    },
+    handleEmployeeSelect(e) {
+      if (!this.selected.includes(e)) this.selected.push(e);
+    },
+    handleEmployeeDeselect(e) {
+      const index = this.selected.indexOf(e);
+      if (index !== -1) {
+        const selected = this.selected;
+        selected.splice(index, 1);
+        this.selected = selected;
+      }
     },
   },
 };
