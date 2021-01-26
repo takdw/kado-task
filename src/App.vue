@@ -31,7 +31,7 @@
         </h2>
       </div>
       <div class="mt-16">
-        <EmployeesDataTable :employees-data="employees" :teams="teams" />
+        <EmployeesDataTable />
       </div>
       <div class="mt-11">
         <div class="flex justify-center items-center space-x-2.5">
@@ -61,19 +61,7 @@ export default {
   components: {
     EmployeesDataTable,
   },
-  data: () => ({
-    employees: [],
-    teams: [],
-  }),
-  created() {
-    Promise.all([fetch("/api/employees"), fetch("/api/teams")])
-      .then(([employeesResponse, teamsResponse]) =>
-        Promise.all([employeesResponse.json(), teamsResponse.json()])
-      )
-      .then(([employees, teams]) => {
-        this.employees = employees;
-        this.teams = teams;
-      });
-  },
+  data: () => ({}),
+  created() {},
 };
 </script>

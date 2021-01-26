@@ -218,15 +218,21 @@
           </div>
         </div>
       </div>
-      <EmployeeRow
-        v-for="employee in pageData"
-        :key="employee.id"
-        :employee="employee"
-        :selected="selected.includes(employee.id)"
-        @employee-selected="handleEmployeeSelect"
-        @employee-deselected="handleEmployeeDeselect"
-        :update="massUpdate"
-      />
+      <template v-if="loading">
+        <EmployeeRowLoading v-for="i in 10" :key="`loading-emp-${i}`" />
+      </template>
+      <template v-else>
+        <EmployeeRow
+          v-for="employee in pageData"
+          :key="employee.id"
+          :employee="employee"
+          :selected="selected.includes(employee.id)"
+          @employee-selected="handleEmployeeSelect"
+          @employee-deselected="handleEmployeeDeselect"
+          :update="massUpdate"
+          v-model="selectedEmployeesData[selected.indexOf(employee.id)]"
+        />
+      </template>
     </div>
     <div class="mt-9">
       <div class="flex justify-center items-center space-x-2">
@@ -274,17 +280,10 @@
 <script>
 import Checkbox from "@/components/Checkbox";
 import EmployeeRow from "@/components/EmployeeRow";
+import EmployeeRowLoading from "@/components/EmployeeRowLoading";
 
 export default {
   props: {
-    employeesData: {
-      type: Array,
-      default: () => [],
-    },
-    teams: {
-      type: Array,
-      default: () => [],
-    },
     perPage: {
       type: Number,
       default: 10,
@@ -293,8 +292,11 @@ export default {
   components: {
     Checkbox,
     EmployeeRow,
+    EmployeeRowLoading,
   },
   data: () => ({
+    allEmployees: [],
+    teams: [],
     page: 0,
     selectAll: false,
     selected: [],
@@ -307,6 +309,7 @@ export default {
       time: "",
       message: "",
     },
+    loading: false,
   }),
   watch: {
     selectAll(val) {
@@ -322,11 +325,24 @@ export default {
       if (val && this.page !== 0) this.page = 0;
     },
   },
+  created() {
+    this.loading = true;
+    Promise.all([fetch("/api/employees"), fetch("/api/teams")])
+      .then(([employeesResponse, teamsResponse]) =>
+        Promise.all([employeesResponse.json(), teamsResponse.json()])
+      )
+      .then(([employees, teams]) => {
+        this.allEmployees = employees;
+        this.teams = teams;
+      })
+      .catch(err => {})
+      .finally(() => (this.loading = false));
+  },
   computed: {
     employees() {
       return this.searchQuery || this.selectedTeam
         ? this.searchResults
-        : this.employeesData;
+        : this.allEmployees;
     },
     total() {
       return this.employees.length;
@@ -356,12 +372,12 @@ export default {
 
       if (!e.target.value) return;
 
-      this.searchResults = this.employeesData.filter(
+      this.searchResults = this.allEmployees.filter(
         employee => employee.team.id == e.target.value
       );
     },
     search(e) {
-      this.searchResults = this.employeesData.filter(employee =>
+      this.searchResults = this.allEmployees.filter(employee =>
         employee.name.toLowerCase().includes(e.target.value.toLowerCase())
       );
     },

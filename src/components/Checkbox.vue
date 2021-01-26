@@ -17,6 +17,7 @@
       @change="$emit('input', $event.target.checked)"
       type="checkbox"
       v-model="checked"
+      :disabled="disabled"
     />
   </div>
 </template>
@@ -25,6 +26,10 @@
 export default {
   props: {
     value: {
+      type: Boolean,
+      default: false,
+    },
+    disabled: {
       type: Boolean,
       default: false,
     },
