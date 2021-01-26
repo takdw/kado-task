@@ -12,7 +12,7 @@
           <input
             type="text"
             class="w-full bg-transparent border-b border-transparent focus:border-pink-primary transition ease-in duration-150"
-            v-model="amount"
+            v-model="data.amount"
           />
         </div>
       </div>
@@ -55,7 +55,7 @@
           <input
             type="text"
             class="w-full text-xs bg-transparent border-b border-transparent focus:border-pink-primary transition ease-in duration-150"
-            v-model="message"
+            v-model="data.message"
             placeholder="Message"
           />
         </div>
@@ -69,7 +69,7 @@
         <input
           type="date"
           class="w-28 text-xs bg-transparent border-b border-transparent focus:outline-none focus:border-pink-primary transition ease-in duration-150"
-          v-model="date"
+          v-model="data.date"
         />
       </div>
       <div class="col-span-2">
@@ -81,7 +81,7 @@
         <input
           type="time"
           class="w-28 text-xs bg-transparent border-b border-transparent focus:outline-none focus:border-pink-primary transition ease-in duration-150"
-          v-model="time"
+          v-model="data.time"
         />
       </div>
     </div>
@@ -120,7 +120,10 @@ export default {
     },
     checked(val) {
       if (val) {
-        this.$emit("employee-selected", this.employee.id);
+        this.$emit("employee-selected", {
+          employee: this.employee,
+          data: this.data,
+        });
       } else {
         this.$emit("employee-deselected", this.employee.id);
       }
@@ -128,20 +131,28 @@ export default {
     update: {
       deep: true,
       handler: function (val) {
-        this.amount = val.amount || 10;
-        this.message = val.message || "";
-        this.date = val.date || "";
-        this.time = val.time || "";
+        this.data.amount = val.amount || 10;
+        this.data.message = val.message || "";
+        this.data.date = val.date || "";
+        this.data.time = val.time || "";
+      },
+    },
+    data: {
+      deep: true,
+      handler: function (val) {
+        if (this.checked) this.$emit("input", val);
       },
     },
   },
   data() {
     return {
       checked: this.selected,
-      amount: this.update.amount || 10,
-      message: this.update.message || "",
-      date: this.update.date || "",
-      time: this.update.time || "",
+      data: {
+        amount: this.update.amount || 10,
+        message: this.update.message || "",
+        date: this.update.date || "",
+        time: this.update.time || "",
+      },
     };
   },
   created() {},

@@ -299,7 +299,8 @@ export default {
     teams: [],
     page: 0,
     selectAll: false,
-    selected: [],
+    selectedEmployees: [],
+    selectedEmployeesData: [],
     selectedTeam: "",
     searchResults: [],
     searchQuery: "",
@@ -354,6 +355,9 @@ export default {
       const start = this.page * this.perPage;
       return this.employees.slice(start, start + this.perPage);
     },
+    selected() {
+      return this.selectedEmployees.map(employee => employee.employee.id);
+    },
   },
   methods: {
     nextPage() {
@@ -382,14 +386,16 @@ export default {
       );
     },
     handleEmployeeSelect(e) {
-      if (!this.selected.includes(e)) this.selected.push(e);
+      if (!this.selected.includes(e.employee.id)) {
+        this.selectedEmployees.push(e);
+        this.selectedEmployeesData.push(e.data);
+      }
     },
     handleEmployeeDeselect(e) {
       const index = this.selected.indexOf(e);
       if (index !== -1) {
-        const selected = this.selected;
-        selected.splice(index, 1);
-        this.selected = selected;
+        this.selectedEmployees.splice(index, 1);
+        this.selectedEmployeesData.splice(index, 1);
       }
     },
   },
