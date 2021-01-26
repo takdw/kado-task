@@ -314,7 +314,10 @@ export default {
   }),
   watch: {
     selectAll(val) {
-      this.selected = val ? this.employees.map(employee => employee.id) : [];
+      this.selectedEmployees = val
+        ? this.employees.map(employee => ({ employee }))
+        : [];
+      this.selectedEmployeesData = this.selectedEmployees.map(_ => ({}));
     },
     searchQuery(val) {
       if (!val) {
